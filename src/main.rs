@@ -3,10 +3,9 @@ use std::cmp::Ordering;
 use rand::Rng;
 
 fn main() {
-    let tup: (i32, f64, u8) = (500, 6.4, 1);
     let tup = (500, 6.4, 1);
     let (x, y, z) = tup;
-    println!("The value of y is: {}", y);
+    println!("{} {} {}", x, y, z);
 
     let x: (i32, f64, u8) = (500, 6.4, 1);
     let five_hundred = x.0;
@@ -18,15 +17,40 @@ fn main() {
         "August", "September", "October", "November", "December"];
     let a: [i32; 5] = [1, 2, 3, 4, 5];
     println!("{} {}", months[0], a[1]);
+    for element in months.iter() {
+        println!("{}", element);
+    }
+    for number in (1..4).rev() {
+        println!("{}", number);
+    }
+
+
+    println!("{}", another_function(5));
+
+    let mut counter = 0;
+    let result = loop {
+        counter += 1;
+        if counter == 10 {
+            break counter * 2
+        }
+    };
+    assert_eq!(result, 20);
+
+
 }
 
-fn main1() {
-    let mut r#fn = 1u8;
-    println!("{}", r#fn);
-    r#fn += 255;
-    const MAX_POINTS: u32 = 100_000;
-    println!("{} {}", r#fn, MAX_POINTS);
+fn another_function(x: i32) -> i32 {
+    println!("The value of x is: {}", x);
+    let y = {
+        let x = 3;
+        x + 1
+    };
+    println!("{} {}", x, y);
 
+    5
+}
+
+fn guess_number() {
     println!("Guess the number!");
 
     let secret_number = rand::thread_rng().gen_range(1, 101);
@@ -51,7 +75,7 @@ fn main1() {
             Err(e) => {
                 println!("ERROR: {}", e);
                 continue;
-            },
+            }
         };
 
         println!("You guessed: {}", guess);
@@ -62,7 +86,7 @@ fn main1() {
             Ordering::Equal => {
                 println!("You win!");
                 break;
-            },
+            }
         }
     }
 }
