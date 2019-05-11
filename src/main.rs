@@ -3,6 +3,36 @@ use std::cmp::Ordering;
 use rand::Rng;
 
 fn main() {
+    string_clone();
+
+}
+
+fn string_clone() {
+    let s1 = String::from("hello");
+    let s2 = s1.clone();
+
+    println!("s1 = {}, s2 = {}", s1, s2);
+}
+
+fn string_move() {
+    let s1 = String::from("hello");
+    // if uncomment will cause error
+    // let s2 = s1;
+    println!("{} world", s1);
+}
+
+fn string_test() {
+    let mut s = "hello";
+    let s2 = s;
+    s = "1hello";
+    let mut ss = String::from("hello");
+    let ss2 = ss;
+    ss = "1hello".to_string();
+    ss.push_str(", world");
+    println!("{} + {} + {} + {}", s, s2, ss, ss2);
+}
+
+fn tup_array() {
     let tup = (500, 6.4, 1);
     let (x, y, z) = tup;
     println!("{} {} {}", x, y, z);
