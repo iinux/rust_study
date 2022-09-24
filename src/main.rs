@@ -1,10 +1,76 @@
+mod raw_identifier;
+
 use std::io;
 use std::cmp::Ordering;
 use rand::Rng;
 
 fn main() {
     string_clone();
+    // guess_number();
+    string_1();
+    other_slice();
+    // println!("{}", raw_identifier::raw_id())
+    let user = build_user(String::from("johann"), String::from("iinux"));
+    println!("{:?}", user);
+    println!("{:#?}", user);
+    dbg!(user);
+}
 
+fn build_user(name: String, email: String) -> User {
+    User {
+        name,
+        email,
+        age: 0
+    }
+}
+
+#[derive(Debug)]
+struct User {
+    name: String,
+    email: String,
+    age: usize
+
+}
+
+fn other_slice() {
+    let a = [1, 2, 3, 4, 5];
+
+    let slice = &a[1..3];
+
+    assert_eq!(slice, &[2, 3]);
+}
+
+fn first_word(s: &str) -> &str {
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
+        }
+    }
+
+    &s[..]
+}
+
+fn string_1() {
+    let my_string = String::from("hello world");
+
+    // `first_word` 适用于 `String`（的 slice），整体或全部
+    let word = first_word(&my_string[0..6]);
+    let word = first_word(&my_string[..]);
+    // `first_word` 也适用于 `String` 的引用，
+    // 这等价于整个 `String` 的 slice
+    let word = first_word(&my_string);
+
+    let my_string_literal = "hello world";
+
+    // `first_word` 适用于字符串字面值，整体或全部
+    let word = first_word(&my_string_literal[0..6]);
+    let word = first_word(&my_string_literal[..]);
+
+    // 因为字符串字面值已经是字符串 slice 了，
+    // 这也是适用的，无需 slice 语法！
+    let word = first_word(my_string_literal);
 }
 
 fn string_clone() {
@@ -85,7 +151,7 @@ fn guess_number() {
 
     let secret_number = rand::thread_rng().gen_range(1, 101);
 
-    println!("The secret number is: {}", secret_number);
+    // println!("The secret number is: {}", secret_number);
 
     loop {
         println!("Please input your guess.");

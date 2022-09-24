@@ -1,5 +1,5 @@
 
-fn raw_id () {
+pub(crate) fn raw_id () {
     let mut r#fn = 1u8;
     println!("{}", r#fn);
     r#fn += 255;
