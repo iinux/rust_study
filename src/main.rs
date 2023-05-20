@@ -3,6 +3,9 @@ mod raw_identifier;
 use std::io;
 use std::cmp::Ordering;
 use rand::Rng;
+use std::net::TcpStream;
+use std::io::prelude::*;
+use std::str;
 
 fn main() {
     string_clone();
@@ -14,6 +17,17 @@ fn main() {
     println!("{:?}", user);
     println!("{:#?}", user);
     dbg!(user);
+    http_request();
+}
+
+
+fn http_request() {
+    let mut stream = TcpStream::connect("www.baidu.com:80").unwrap();
+    let request = "GET / HTTP/1.1\r\nHost: www.baidu.com\r\n\r\n";
+    stream.write(request.as_bytes()).unwrap();
+    let mut buffer = [0; 512];
+    stream.read(&mut buffer).unwrap();
+    println!("{}", str::from_utf8(&buffer).unwrap());
 }
 
 fn build_user(name: String, email: String) -> User {
