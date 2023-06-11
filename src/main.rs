@@ -1,19 +1,106 @@
 mod raw_identifier;
+mod my_http;
 
 use std::io;
 use std::cmp::Ordering;
 use rand::Rng;
+use crate::raw_identifier::raw_id;
+use std::collections::{HashMap, HashSet};
 
 fn main() {
     string_clone();
     // guess_number();
     string_1();
     other_slice();
+    tup_array();
     // println!("{}", raw_identifier::raw_id())
     let user = build_user(String::from("johann"), String::from("iinux"));
     println!("{:?}", user);
     println!("{:#?}", user);
+    println!("age: {}", user.get_age());
+    User::static_method();
+    user.show();
     dbg!(user);
+    // raw_id();
+    my_http::send();
+
+    let price = 99;
+    double_price0(price);
+    println!("{}", price);
+
+    let price = 99;
+    double_price(price);
+    println!("{}", price);
+
+    let mut price = 99;
+    double_price2(&mut price);
+    println!("{}", price);
+
+    let price = 99;
+    double_price3(&price);
+    println!("{}", price);
+
+    println!("{:?}", MyEnum::Day1);
+
+    let result = get_discount(123);
+    println!("{:?}", result);
+    match result {
+        Some(false) => println!("ok false"),
+        Some(true) => println!("ok true"),
+        None => println!("none"),
+        _ => println!("default")
+    }
+
+    let me2 = MyEnum2::Name(String::from("i am string"));
+    match me2 {
+        MyEnum2::Name(val) => {
+            println!("{} {:?}", val, val)
+        }
+    }
+
+    let t = Data{value:100};
+    println!("{}", t.value);
+}
+
+struct Data<T> {
+    value:T
+}
+
+enum MyEnum2 {
+    Name(String)
+}
+
+fn get_discount(price: i32) -> Option<bool> {
+    if price > 100 {
+        Some(true)
+    } else {
+        None
+    }
+}
+
+#[derive(Debug)]
+enum MyEnum {
+    Day1,
+    Day2,
+    Day3
+}
+
+fn double_price0(price:i32){
+    println!("{}", price);
+}
+
+fn double_price(mut price:i32) {
+    price = price * 2;
+    println!("{}", price);
+}
+
+fn double_price2(price: &mut i32) {
+    *price = *price * 2;
+    println!("{}", price);
+}
+
+fn double_price3(price:& i32) {
+    println!("{}", price)
 }
 
 fn build_user(name: String, email: String) -> User {
@@ -29,7 +116,26 @@ struct User {
     name: String,
     email: String,
     age: usize
+}
 
+trait Show {
+    fn show(&self);
+}
+
+impl Show for User {
+    fn show(&self) {
+        println!("i am in trait")
+    }
+}
+
+impl User {
+    fn get_age(&self) -> usize {
+        self.age
+    }
+
+    fn static_method() {
+        println!("static method")
+    }
 }
 
 fn other_slice() {
@@ -71,6 +177,11 @@ fn string_1() {
     // 因为字符串字面值已经是字符串 slice 了，
     // 这也是适用的，无需 slice 语法！
     let word = first_word(my_string_literal);
+
+    let str1 = "zhang".to_string();
+    let str2 = "san".to_string();
+    let str3 = str1 + &str2;
+    println!("{}", str3);
 }
 
 fn string_clone() {
@@ -96,6 +207,8 @@ fn string_test() {
     ss = "1hello".to_string();
     ss.push_str(", world");
     println!("{} + {} + {} + {}", s, s2, ss, ss2);
+
+
 }
 
 fn tup_array() {
@@ -113,6 +226,10 @@ fn tup_array() {
         "August", "September", "October", "November", "December"];
     let a: [i32; 5] = [1, 2, 3, 4, 5];
     println!("{} {}", months[0], a[1]);
+
+    let a = ["";3];
+    println!("{:?}", a);
+
     for element in months.iter() {
         println!("{}", element);
     }
@@ -120,6 +237,36 @@ fn tup_array() {
         println!("{}", number);
     }
 
+    for number in 1..=5 {
+        println!("{}", number);
+    }
+
+    let alphabet = vec!["A", "B", "C"];
+    for m in alphabet.iter() {
+        match m {
+            &"A" => println!("GOOD"),
+            _ => println!("{}", m)
+        }
+    }
+    println!("{:?}", alphabet);
+
+    for m in alphabet.into_iter() {
+        match m {
+            "A" => println!("GOOD"),
+            _ => println!("{}", m)
+        }
+    }
+    // println!("{:?}", alphabet);
+
+    let mut alphabet = vec!["A", "B", "C"];
+    for m in alphabet.iter_mut() {
+        *m = match m {
+            &mut "A" => "GOOD",
+            _ => *m
+        }
+    }
+
+    println!("vec {:?}", alphabet);
 
     println!("{}", another_function(5));
 
@@ -132,7 +279,56 @@ fn tup_array() {
     };
     assert_eq!(result, 20);
 
+    let mut v = Vec::new();
+    v.push("a");
+    v.push("b");
+    v.push("c");
+    println!("vec {:?}", v);
 
+    if v.contains(&"b") {
+        println!("vec contains b");
+    }
+
+    let x = v.remove(0);
+    println!("{} {:?} {}", x, v, v[0]);
+
+    let mut hm = HashMap::new();
+    hm.insert("a", 1);
+    hm.insert("b", 2);
+    hm.insert("c", 3);
+    hm.insert("d", "4".parse().unwrap());
+    println!("hm={:?}", hm);
+
+    match hm.get("a") {
+        Some(v) => {
+            println!("a={}", v)
+        },
+        None => {
+            println!("none")
+        }
+    }
+
+    for (k, v) in hm.iter() {
+        println!("hm k={},v={}", k, v);
+    }
+
+    let a = hm.remove("a");
+    println!("a={:?} hm={:?}", a, hm);
+
+    let mut hs = HashSet::new();
+    hs.insert("a");
+    hs.insert("a");
+    hs.insert("b");
+    hs.insert("c");
+    println!("hs={:?}", hs);
+
+    for m in hs.iter() {
+        println!("hs iter {}", m);
+    }
+    match hs.get("a") {
+        None => println!("not found"),
+        Some(data) => println!("{}", data)
+    }
 }
 
 fn another_function(x: i32) -> i32 {

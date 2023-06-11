@@ -6,3 +6,10 @@ edition = "2018"
 
 [dependencies]
 rand = "0.4.0"
+reqwest = "0.11.18"
+
+[source.crates-io]
+replace-with = 'tuna'
+
+[source.tuna]
+registry = "https://mirrors.tuna.tsinghua.edu.cn/git/crates.io-index.git"
