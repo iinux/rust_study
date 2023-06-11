@@ -6,6 +6,9 @@ use std::cmp::Ordering;
 use rand::Rng;
 use crate::raw_identifier::raw_id;
 use std::collections::{HashMap, HashSet};
+use std::net::TcpStream;
+use std::io::prelude::*;
+use std::str;
 
 fn main() {
     string_clone();
@@ -60,6 +63,8 @@ fn main() {
 
     let t = Data{value:100};
     println!("{}", t.value);
+
+    http_request();
 }
 
 struct Data<T> {
@@ -101,6 +106,16 @@ fn double_price2(price: &mut i32) {
 
 fn double_price3(price:& i32) {
     println!("{}", price)
+}
+
+
+fn http_request() {
+    let mut stream = TcpStream::connect("www.baidu.com:80").unwrap();
+    let request = "GET / HTTP/1.1\r\nHost: www.baidu.com\r\n\r\n";
+    stream.write(request.as_bytes()).unwrap();
+    let mut buffer = [0; 512];
+    stream.read(&mut buffer).unwrap();
+    println!("{}", str::from_utf8(&buffer).unwrap());
 }
 
 fn build_user(name: String, email: String) -> User {
