@@ -1,7 +1,7 @@
 mod raw_identifier;
 mod my_http;
 
-use std::io;
+use std::{io, fs, thread};
 use std::cmp::Ordering;
 use rand::Rng;
 use crate::raw_identifier::raw_id;
@@ -9,6 +9,10 @@ use std::collections::{HashMap, HashSet};
 use std::net::TcpStream;
 use std::io::prelude::*;
 use std::str;
+use std::fmt::{Display, Formatter};
+use std::ops::Index;
+use std::fs::{OpenOptions, File};
+use std::time::Duration;
 
 fn main() {
     string_clone();
@@ -24,6 +28,8 @@ fn main() {
     User::static_method();
     user.show();
     dbg!(user);
+    let user = build_user(String::from("johann"), String::from("iinux"));
+    show2(user);
     // raw_id();
     my_http::send();
 
@@ -61,10 +67,90 @@ fn main() {
         }
     }
 
-    let t = Data{value:100};
+    let t = Data { value: 100 };
     println!("{}", t.value);
 
     http_request();
+
+    let result1 = io::stdout().write("hello".as_bytes()).unwrap();
+    println!("{}", result1);
+
+    let input_args = std::env::args();
+    for arg in input_args {
+        println!("{}", arg)
+    }
+
+    let file = std::fs::File::open("Cargo.lock");
+    println!("{:?}", file);
+
+    let file = std::fs::File::create("data.txt").expect("create fail");
+    println!("{:?}", file);
+
+    // fs::remove_file("data.txt").expect("delete fail");
+    let mut file = OpenOptions::new().append(true).open("data.txt").expect("append fail");
+    file.write("hello".as_bytes()).expect("write fail");
+    file.write_all("hello".as_bytes()).expect("write fail");
+
+    let mut file = std::fs::File::open("data.txt").unwrap();
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).unwrap();
+    println!("{}", contents);
+
+    let v=3;
+    let add = |a,b|{a+b+v};
+    println!("{}", add(1,3));
+    println!("{}", v);
+
+    let handler = thread::spawn(||{
+        for i in 1..10 {
+            println!("son thread {}", i);
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    for i in 1..5 {
+        println!("main thread {}", i);
+        thread::sleep(Duration::from_millis(1));
+    }
+
+    handler.join().unwrap();
+
+    // panic!("error");
+
+    let v = vec!["a"];
+    // v[3];
+
+    let f = File::open("abc.jpg");
+    println!("{:?}", f);
+
+    let result = is_even(6).unwrap();
+    println!("{}", result);
+    //let result = is_even(11).unwrap();
+    //println!("{}", result);
+    let result = is_even(11).expect("error in expect ");
+    println!("{}", result);
+
+}
+
+fn is_even(no: i32) -> Result<bool, String> {
+    return if no%2==0 {
+        Ok(true)
+    } else {
+        Err("is not even".to_string())
+    }
+
+}
+
+fn show2<T:Display>(t:T) {
+    println!("{}", t);
+}
+
+impl Display for User {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        println!("{} {} {}", self.name, self.age, self.email);
+        let r = Result::Ok(());
+        return r;
+    }
 }
 
 struct Data<T> {
@@ -257,6 +343,7 @@ fn tup_array() {
     }
 
     let alphabet = vec!["A", "B", "C"];
+    // iter => &T
     for m in alphabet.iter() {
         match m {
             &"A" => println!("GOOD"),
@@ -265,6 +352,7 @@ fn tup_array() {
     }
     println!("{:?}", alphabet);
 
+    // iter => T
     for m in alphabet.into_iter() {
         match m {
             "A" => println!("GOOD"),
@@ -274,6 +362,8 @@ fn tup_array() {
     // println!("{:?}", alphabet);
 
     let mut alphabet = vec!["A", "B", "C"];
+
+    // iter => &mut T
     for m in alphabet.iter_mut() {
         *m = match m {
             &mut "A" => "GOOD",
@@ -344,6 +434,15 @@ fn tup_array() {
         None => println!("not found"),
         Some(data) => println!("{}", data)
     }
+
+    let alphabet = vec!["A", "B", "C"];
+    println!("iter");
+    let mut it = alphabet.iter();
+    println!("{:?}", it.next());
+    println!("{:?}", it.next());
+    println!("{:?}", it.next());
+    println!("{:?}", it.next());
+    println!("{:?}", it.next());
 }
 
 fn another_function(x: i32) -> i32 {
